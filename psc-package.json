@@ -3,6 +3,13 @@
   "set": "bouzuya-20180823",
   "source": "https://github.com/bouzuya/package-sets.git",
   "depends": [
+    "aff",
+    "avar",
+    "bouzuya-http-method",
+    "bouzuya-http-status-code",
+    "effect",
+    "foreign-object",
+    "node-http",
     "prelude",
     "psci-support"
   ]
