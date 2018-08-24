@@ -10,6 +10,10 @@
   "bugs": {
     "url": "https://github.com/bouzuya/purescript-bouzuya-http-server/issues"
   },
+  "devDependencies": {
+    "psc-package-bin-simple": "^1.0.1",
+    "purescript": "^0.12.0"
+  },
   "homepage": "https://github.com/bouzuya/purescript-bouzuya-http-server#readme",
   "keywords": [],
   "license": "MIT",
@@ -19,6 +23,9 @@
     "url": "git+https://github.com/bouzuya/purescript-bouzuya-http-server.git"
   },
   "scripts": {
+    "postinstall": "psc-package install",
+    "psc-package": "psc-package",
+    "purs": "purs",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
