@@ -23,9 +23,12 @@
     "url": "git+https://github.com/bouzuya/purescript-bouzuya-http-server.git"
   },
   "scripts": {
+    "build": "psc-package sources | xargs purs compile 'src/**/*.purs' 'test/**/*.purs'",
     "postinstall": "psc-package install",
     "psc-package": "psc-package",
     "purs": "purs",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "repl": "psc-package repl",
+    "start": "node -e \"require('./output/Main').main()\"",
+    "test": "node -e \"require('./output/Test.Main').main()\""
   }
 }
