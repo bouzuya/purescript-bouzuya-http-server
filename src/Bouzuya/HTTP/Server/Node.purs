@@ -6,6 +6,7 @@ import Bouzuya.HTTP.Header (Header)
 import Bouzuya.HTTP.Method as Method
 import Bouzuya.HTTP.Request (Request)
 import Bouzuya.HTTP.Response (Response)
+import Bouzuya.HTTP.Server.Type (ServerOptions)
 import Bouzuya.HTTP.Server.Uint8Array as Uint8Array
 import Bouzuya.HTTP.StatusCode (StatusCode(..))
 import Data.Array as Array
@@ -30,10 +31,6 @@ import Node.URL as URL
 import Prelude (Unit, bind, map, pure, unit, ($), (<>), (>>>))
 
 type Body = Buffer.Buffer
-type ServerOptions =
-  { hostname :: String
-  , port :: Int
-  }
 
 setBody :: HTTP.Response -> Body -> Effect Unit
 setBody response body = do
