@@ -9,6 +9,6 @@ type Address =
   }
 
 type ServerOptions =
-  { hostname :: String
+  { host :: String
   , port :: Int
   }

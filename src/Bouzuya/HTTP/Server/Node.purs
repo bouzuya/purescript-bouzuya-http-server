@@ -151,11 +151,11 @@ run
   -> (Address -> Effect Unit)
   -> (Request -> Aff Response)
   -> Effect Unit
-run { hostname, port } onListen onRequest = do
+run { host, port } onListen onRequest = do
   server <- HTTP.createServer (handleRequest onRequest)
   let
     listenOptions =
-      { hostname
+      { hostname: host
       , port
       , backlog: Nothing
       }
