@@ -1,9 +1,16 @@
 module Test.Main
-  (main) where
+  ( main
+  ) where
+
+import Prelude
 
 import Effect (Effect)
-import Effect.Console (log)
-import Prelude (Unit)
+import Test.Unit as TestUnit
+import Test.Unit.Assert as Assert
+import Test.Unit.Main as TestUnitMain
 
 main :: Effect Unit
-main = log "test"
+main = TestUnitMain.runTest do
+  TestUnit.suite "dummy" do
+    TestUnit.test "dummy" do
+      Assert.equal 1 1
