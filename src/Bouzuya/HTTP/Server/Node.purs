@@ -5,6 +5,8 @@ module Bouzuya.HTTP.Server.Node
 import Prelude
 
 import Bouzuya.HTTP.Header (Header)
+import Bouzuya.HTTP.Header as Header
+import Bouzuya.HTTP.Headers (Headers)
 import Bouzuya.HTTP.Method as Method
 import Bouzuya.HTTP.Request (Request)
 import Bouzuya.HTTP.Response (Response)
@@ -37,19 +39,22 @@ import Node.URL as URL
 import Partial.Unsafe as Partial
 import Unsafe.Coerce as Unsafe
 
-type Body = Buffer.Buffer
-
-setBody :: HTTP.Response -> Body -> Effect Unit
-setBody response body = do
+setBody :: HTTP.Response -> Uint8Array -> Effect Unit
+setBody response av = do
+  b <- Buffer.fromArrayBuffer (TypedArray.buffer av)
   let writable = HTTP.responseAsStream response
-  _ <- Stream.write writable body $ pure unit
-  Stream.end writable $ pure unit
+  _ <- Stream.write writable b (pure unit)
+  Stream.end writable (pure unit)
 
 setHeader :: HTTP.Response -> Header -> Effect Unit
-setHeader response (Tuple name value) =
-  HTTP.setHeader response name value
+setHeader response header =
+  let
+    n = Header.name header
+    v = Header.value header
+  in
+    HTTP.setHeader response n v
 
-setHeaders :: HTTP.Response -> Array Header -> Effect Unit
+setHeaders :: HTTP.Response -> Headers -> Effect Unit
 setHeaders response headers =
   Foldable.for_ headers (setHeader response)
 
@@ -116,8 +121,8 @@ writeResponse
 writeResponse response { body, headers, status } = do
   _ <- setStatusCode response status
   _ <- setHeaders response headers
-  b <- Buffer.fromArrayBuffer (TypedArray.buffer body)
-  setBody response b
+  _ <- setBody response body
+  pure unit
 
 handleRequest
   :: (Request -> Aff Response)
