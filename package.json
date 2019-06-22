@@ -2,17 +2,13 @@
   "name": "purescript-bouzuya-http-server",
   "description": "purescript-bouzuya-http-server",
   "version": "0.1.0",
-  "author": {
-    "email": "m@bouzuya.net",
-    "name": "bouzuya",
-    "url": "https://bouzuya.net/"
-  },
+  "author": "bouzuya <m@bouzuya.net> (https://bouzuya.net/)",
   "bugs": {
     "url": "https://github.com/bouzuya/purescript-bouzuya-http-server/issues"
   },
   "devDependencies": {
-    "psc-package-bin-simple": "^1.0.1",
-    "purescript": "^0.12.0"
+    "purescript": "^0.13.0",
+    "spago": "^0.8.5"
   },
   "homepage": "https://github.com/bouzuya/purescript-bouzuya-http-server#readme",
   "keywords": [],
@@ -23,12 +19,11 @@
     "url": "git+https://github.com/bouzuya/purescript-bouzuya-http-server.git"
   },
   "scripts": {
-    "build": "psc-package sources | xargs purs compile 'src/**/*.purs' 'test/**/*.purs'",
-    "postinstall": "psc-package install",
-    "psc-package": "psc-package",
+    "build": "spago build",
+    "docs": "spago docs",
     "purs": "purs",
-    "repl": "psc-package repl",
-    "start": "node -e \"require('./output/Main').main()\"",
-    "test": "node -e \"require('./output/Test.Main').main()\""
+    "repl": "spago repl",
+    "spago": "spago",
+    "test": "spago test"
   }
 }
