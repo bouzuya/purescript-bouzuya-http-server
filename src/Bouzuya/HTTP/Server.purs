@@ -1,7 +1,6 @@
 module Bouzuya.HTTP.Server
-  ( module Node
-  , module Type
+  ( module ReExports
   ) where
 
-import Bouzuya.HTTP.Server.Node (run) as Node
-import Bouzuya.HTTP.Server.Type (ServerOptions) as Type
+import Bouzuya.HTTP.Server.Node (run) as ReExports
+import Bouzuya.HTTP.Server.Type (Address, ServerOptions) as ReExports
