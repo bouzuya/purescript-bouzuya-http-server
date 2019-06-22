@@ -12,6 +12,7 @@ import Bouzuya.HTTP.Server.Type (ServerOptions, Address)
 import Bouzuya.HTTP.StatusCode (StatusCode(..))
 import Data.Array as Array
 import Data.ArrayBuffer.Typed as TypedArray
+import Data.ArrayBuffer.Types (Uint8Array)
 import Data.Either as Either
 import Data.Foldable as Foldable
 import Data.Maybe (Maybe(..), fromMaybe, maybe)
@@ -28,7 +29,6 @@ import Effect.Class (liftEffect)
 import Foreign.Object as Object
 import Global.Unsafe (unsafeDecodeURIComponent)
 import Node.Buffer as Buffer
-import Node.Encoding as Encoding
 import Node.HTTP (Server)
 import Node.HTTP as HTTP
 import Node.Net.Server as Net
@@ -58,7 +58,7 @@ setStatusCode response (StatusCode code message) = do
   _ <- HTTP.setStatusCode response code
   HTTP.setStatusMessage response message
 
-readBody :: HTTP.Request -> Aff String
+readBody :: HTTP.Request -> Aff Uint8Array
 readBody request = do
   let readable = HTTP.requestAsStream request
   bv <- AVar.empty
@@ -72,9 +72,10 @@ readBody request = do
   _ <- liftEffect $ Stream.onEnd readable $ Aff.launchAff_ do
     bs <- AVar.take bsv
     b <- liftEffect (Buffer.concat bs)
-    AVar.put b bv
-  b <- AVar.take bv
-  liftEffect (Buffer.toString Encoding.UTF8 b)
+    ab <- liftEffect (Buffer.toArrayBuffer b)
+    av <- liftEffect (TypedArray.whole ab)
+    AVar.put av bv
+  AVar.take bv
 
 readRequest :: HTTP.Request -> Aff Request
 readRequest request = do
