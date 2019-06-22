@@ -9,6 +9,7 @@ You can edit this file as you like.
     , "bouzuya-http-method"
     , "bouzuya-http-status-code"
     , "node-http"
+    , "node-net"
     , "psci-support"
     , "test-unit"
     ]

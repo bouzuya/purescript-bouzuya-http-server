@@ -119,6 +119,14 @@ let bouzuya =
 
 let overrides = {=}
 
-let additions = {=} // bouzuya
+let additions = {=} // bouzuya //
+      { node-net =
+          mkPackage
+            [ "node-fs"
+            , "options"
+            ]
+            "https://github.com/purescript-node/purescript-node-net.git"
+            "v1.0.0"
+      }
 
 in  upstream // overrides // additions
