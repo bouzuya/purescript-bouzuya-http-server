@@ -1,8 +1,3 @@
-# purescript-bouzuya-http-server
-
-`Bouzuya.HTTP.Server` module.
-
-```purescript
 module Test.Example
   ( tests
   ) where
@@ -46,18 +41,3 @@ tests = TestUnit.suite "Example" do
     -- Transfer-Encoding: chunked
     --
     -- GET /foo
-```
-
-See: [`Example.purs`](test/Example.purs).
-
-## License
-
-[MIT](LICENSE)
-
-## Author
-
-[bouzuya][user] &lt;[m@bouzuya.net][email]&gt; ([https://bouzuya.net/][url])
-
-[user]: https://github.com/bouzuya
-[email]: mailto:m@bouzuya.net
-[url]: https://bouzuya.net/
