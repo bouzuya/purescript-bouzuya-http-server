@@ -34,10 +34,14 @@ import Node.Buffer as Buffer
 import Node.HTTP (Server)
 import Node.HTTP as HTTP
 import Node.Net.Server as Net
+import Node.Net.Socket (Socket)
+import Node.Net.Socket as Socket
 import Node.Stream as Stream
 import Node.URL as URL
 import Partial.Unsafe as Partial
 import Unsafe.Coerce as Unsafe
+
+foreign import socket :: HTTP.Request -> Socket
 
 setBody :: HTTP.Response -> Uint8Array -> Effect Unit
 setBody response av = do
@@ -106,11 +110,18 @@ readRequest request = do
           )
         >>> Array.catMaybes
   body <- readBody request
+  remoteHostMaybe <- liftEffect (Socket.remoteAddress (socket request))
+  remoteHost <-
+    Maybe.maybe'
+      (\_ -> Partial.unsafeCrashWith "socket is not connected")
+      pure
+      remoteHostMaybe
   pure $
     { body
     , headers: Object.foldMap (\k v -> [Tuple k v]) headers
     , method
     , pathname
+    , remoteHost
     , searchParams
     }
 

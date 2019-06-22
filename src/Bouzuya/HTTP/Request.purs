@@ -16,6 +16,7 @@ type Request =
   , headers :: Headers
   , method :: Method
   , pathname :: String
+  , remoteHost :: String
   , searchParams :: Array (Tuple String String)
   }
 
