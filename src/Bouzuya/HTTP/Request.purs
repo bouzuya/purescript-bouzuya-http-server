@@ -2,7 +2,7 @@ module Bouzuya.HTTP.Request
   ( Request
   ) where
 
-import Bouzuya.HTTP.Header (Headers)
+import Bouzuya.HTTP.Headers (Headers)
 import Bouzuya.HTTP.Method (Method)
 import Data.Tuple (Tuple)
 
