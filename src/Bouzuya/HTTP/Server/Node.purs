@@ -9,9 +9,9 @@ import Bouzuya.HTTP.Method as Method
 import Bouzuya.HTTP.Request (Request)
 import Bouzuya.HTTP.Response (Response)
 import Bouzuya.HTTP.Server.Type (ServerOptions, Address)
-import Bouzuya.HTTP.Server.Uint8Array as Uint8Array
 import Bouzuya.HTTP.StatusCode (StatusCode(..))
 import Data.Array as Array
+import Data.ArrayBuffer.Typed as TypedArray
 import Data.Either as Either
 import Data.Foldable as Foldable
 import Data.Maybe (Maybe(..), fromMaybe, maybe)
@@ -115,7 +115,7 @@ writeResponse
 writeResponse response { body, headers, status } = do
   _ <- setStatusCode response status
   _ <- setHeaders response headers
-  b <- Uint8Array.toBuffer body
+  b <- Buffer.fromArrayBuffer (TypedArray.buffer body)
   setBody response b
 
 handleRequest

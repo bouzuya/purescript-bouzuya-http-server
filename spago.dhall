@@ -5,7 +5,8 @@ You can edit this file as you like.
 { name =
     "purescript-bouzuya-http-server"
 , dependencies =
-    [ "avar"
+    [ "arraybuffer"
+    , "avar"
     , "bouzuya-http-method"
     , "bouzuya-http-status-code"
     , "node-http"
