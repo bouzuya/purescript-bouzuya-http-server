@@ -86,6 +86,23 @@ readBody request = do
     AVar.put av bv
   AVar.take bv
 
+readRemoteAddress :: HTTP.Request -> Effect Address
+readRemoteAddress request = do
+  let socket' = socket request
+  hostMaybe <- Socket.remoteAddress socket'
+  host <-
+    Maybe.maybe'
+      (\_ -> Partial.unsafeCrashWith "socket is not connected")
+      pure
+      hostMaybe
+  portMaybe <- Socket.remotePort socket'
+  port <-
+    Maybe.maybe'
+      (\_ -> Partial.unsafeCrashWith "socket is not connected")
+      pure
+      portMaybe
+  pure { host, port }
+
 readRequest :: HTTP.Request -> Aff Request
 readRequest request = do
   let
@@ -110,18 +127,13 @@ readRequest request = do
           )
         >>> Array.catMaybes
   body <- readBody request
-  remoteHostMaybe <- liftEffect (Socket.remoteAddress (socket request))
-  remoteHost <-
-    Maybe.maybe'
-      (\_ -> Partial.unsafeCrashWith "socket is not connected")
-      pure
-      remoteHostMaybe
+  remoteAddress <- liftEffect (readRemoteAddress request)
   pure $
     { body
     , headers: Object.foldMap (\k v -> [Tuple k v]) headers
     , method
     , pathname
-    , remoteHost
+    , remoteAddress
     , searchParams
     }
 
