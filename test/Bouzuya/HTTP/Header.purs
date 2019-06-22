@@ -14,6 +14,14 @@ import Test.Unit.Assert as Assert
 
 tests :: TestSuite
 tests = TestUnit.suite "Bouzuya.HTTP.Header" do
+  TestUnit.test "header" do
+    -- TODO: escape
+    let
+      k = "Content-Type"
+      v = "text/html"
+      h1 = Header.header k v
+    Assert.equal (Maybe.Just (Tuple.Tuple k v)) h1
+
   TestUnit.test "lookup" do
     let
       k = "Content-Type"
