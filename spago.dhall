@@ -10,6 +10,7 @@ You can edit this file as you like.
     , "bouzuya-http-status-code"
     , "node-http"
     , "psci-support"
+    , "test-unit"
     ]
 , packages =
     ./packages.dhall
