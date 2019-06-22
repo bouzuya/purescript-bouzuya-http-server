@@ -17,10 +17,10 @@ tests = TestUnit.suite "Bouzuya.HTTP.Header" do
   TestUnit.test "header" do
     -- TODO: escape
     let
-      k = "Content-Type"
+      n = "Content-Type"
       v = "text/html"
-      h1 = Header.header k v
-    Assert.equal (Maybe.Just (Tuple.Tuple k v)) h1
+      h1 = Header.header n v
+    Assert.equal (Maybe.Just (Tuple.Tuple n v)) (map Header.toTuple h1)
 
   TestUnit.test "lookup" do
     let
@@ -30,3 +30,24 @@ tests = TestUnit.suite "Bouzuya.HTTP.Header" do
       headers = [ kv ]
     Assert.equal (Maybe.Just kv) (Header.lookup k headers)
     Assert.equal (Maybe.Just kv) (Header.lookup (String.toUpper k) headers)
+
+  TestUnit.test "name" do
+    let
+      n = "Content-Type"
+      v = "text/html"
+      h1 = Header.header n v
+    Assert.equal (Maybe.Just n) (map Header.name h1)
+
+  TestUnit.test "toTuple" do
+    let
+      n = "Content-Type"
+      v = "text/html"
+      h1 = Header.header n v
+    Assert.equal (Maybe.Just (Tuple.Tuple n v)) (map Header.toTuple h1)
+
+  TestUnit.test "value" do
+    let
+      n = "Content-Type"
+      v = "text/html"
+      h1 = Header.header n v
+    Assert.equal (Maybe.Just v) (map Header.value h1)

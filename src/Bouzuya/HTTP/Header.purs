@@ -3,6 +3,9 @@ module Bouzuya.HTTP.Header
   , Headers
   , header
   , lookup
+  , name
+  , toTuple
+  , value
   ) where
 
 import Prelude
@@ -24,3 +27,12 @@ lookup :: String -> Headers -> Maybe Header
 lookup key =
   let eqKey = eq (String.toLower key)
   in Array.find (eqKey <<< String.toLower <<< Tuple.fst)
+
+name :: Header -> String
+name = Tuple.fst
+
+toTuple :: Header -> Tuple String String
+toTuple = identity
+
+value :: Header -> String
+value = Tuple.snd
