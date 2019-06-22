@@ -1,7 +1,7 @@
 {
   "name": "purescript-bouzuya-http-server",
   "description": "purescript-bouzuya-http-server",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "bouzuya <m@bouzuya.net> (https://bouzuya.net/)",
   "bugs": {
     "url": "https://github.com/bouzuya/purescript-bouzuya-http-server/issues"
