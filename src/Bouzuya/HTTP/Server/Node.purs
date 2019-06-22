@@ -2,16 +2,20 @@ module Bouzuya.HTTP.Server.Node
   ( run
   ) where
 
+import Prelude
+
 import Bouzuya.HTTP.Header (Header)
 import Bouzuya.HTTP.Method as Method
 import Bouzuya.HTTP.Request (Request)
 import Bouzuya.HTTP.Response (Response)
-import Bouzuya.HTTP.Server.Type (ServerOptions)
+import Bouzuya.HTTP.Server.Type (ServerOptions, Address)
 import Bouzuya.HTTP.Server.Uint8Array as Uint8Array
 import Bouzuya.HTTP.StatusCode (StatusCode(..))
 import Data.Array as Array
+import Data.Either as Either
 import Data.Foldable as Foldable
 import Data.Maybe (Maybe(..), fromMaybe, maybe)
+import Data.Maybe as Maybe
 import Data.Nullable as Nullable
 import Data.String (Pattern(..))
 import Data.String as String
@@ -25,10 +29,13 @@ import Foreign.Object as Object
 import Global.Unsafe (unsafeDecodeURIComponent)
 import Node.Buffer as Buffer
 import Node.Encoding as Encoding
+import Node.HTTP (Server)
 import Node.HTTP as HTTP
+import Node.Net.Server as Net
 import Node.Stream as Stream
 import Node.URL as URL
-import Prelude (Unit, bind, map, pure, unit, ($), (<>), (>>>))
+import Partial.Unsafe as Partial
+import Unsafe.Coerce as Unsafe
 
 type Body = Buffer.Buffer
 
@@ -121,9 +128,27 @@ handleRequest onRequest request response = Aff.launchAff_ do
   res <- onRequest req
   liftEffect $ writeResponse response res
 
+address :: Server -> Effect Address
+address server = do
+  let
+    server' :: Net.Server
+    server' = Unsafe.unsafeCoerce server
+  addressMaybe <- Net.address server'
+  addressEither <-
+    Maybe.maybe'
+      (\_ -> Partial.unsafeCrashWith "server is not running")
+      pure
+      addressMaybe
+  { address: address', port } <-
+    Either.either
+      pure
+      (\_ -> Partial.unsafeCrashWith "server is not TCP server")
+      addressEither
+  pure { host: address', port }
+
 run
   :: ServerOptions
-  -> Effect Unit
+  -> (Address -> Effect Unit)
   -> (Request -> Aff Response)
   -> Effect Unit
 run { hostname, port } onListen onRequest = do
@@ -134,4 +159,10 @@ run { hostname, port } onListen onRequest = do
       , port
       , backlog: Nothing
       }
-  HTTP.listen server listenOptions onListen
+  HTTP.listen
+    server
+    listenOptions
+    do
+      addr <- address server
+      _ <- onListen addr
+      pure unit

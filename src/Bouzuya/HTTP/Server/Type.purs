@@ -1,5 +1,12 @@
 module Bouzuya.HTTP.Server.Type
-  (ServerOptions) where
+  ( Address
+  , ServerOptions
+  ) where
+
+type Address =
+  { host :: String
+  , port :: Int
+  }
 
 type ServerOptions =
   { hostname :: String
