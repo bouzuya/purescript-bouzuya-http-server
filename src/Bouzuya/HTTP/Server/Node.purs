@@ -4,6 +4,8 @@ module Bouzuya.HTTP.Server.Node
 
 import Prelude
 
+import Bouzuya.HTTP.Body (Body)
+import Bouzuya.HTTP.Body as Body
 import Bouzuya.HTTP.Header (Header)
 import Bouzuya.HTTP.Header as Header
 import Bouzuya.HTTP.Headers (Headers)
@@ -43,11 +45,16 @@ import Unsafe.Coerce as Unsafe
 
 foreign import socket :: HTTP.Request -> Socket
 
-setBody :: HTTP.Response -> Uint8Array -> Effect Unit
-setBody response av = do
-  b <- Buffer.fromArrayBuffer (TypedArray.buffer av)
+setBody :: HTTP.Response -> Maybe Body -> Effect Unit
+setBody response bodyMaybe = do
   let writable = HTTP.responseAsStream response
-  _ <- Stream.write writable b (pure unit)
+  case bodyMaybe of
+    Maybe.Just body -> do
+      av <- Body.fromBody body :: _ Uint8Array
+      b <- Buffer.fromArrayBuffer (TypedArray.buffer av)
+      _ <- Stream.write writable b (pure unit)
+      pure unit
+    Maybe.Nothing -> pure unit
   Stream.end writable (pure unit)
 
 setHeader :: HTTP.Response -> Header -> Effect Unit
@@ -67,7 +74,7 @@ setStatusCode response (StatusCode code message) = do
   _ <- HTTP.setStatusCode response code
   HTTP.setStatusMessage response message
 
-readBody :: HTTP.Request -> Aff Uint8Array
+readBody :: HTTP.Request -> Aff Body
 readBody request = do
   let readable = HTTP.requestAsStream request
   bv <- AVar.empty
@@ -82,8 +89,9 @@ readBody request = do
     bs <- AVar.take bsv
     b <- liftEffect (Buffer.concat bs)
     ab <- liftEffect (Buffer.toArrayBuffer b)
-    av <- liftEffect (TypedArray.whole ab)
-    AVar.put av bv
+    av <- (liftEffect (TypedArray.whole ab)) :: _ Uint8Array
+    body <- liftEffect (Body.toBody av)
+    AVar.put body bv
   AVar.take bv
 
 readRemoteAddress :: HTTP.Request -> Effect Address

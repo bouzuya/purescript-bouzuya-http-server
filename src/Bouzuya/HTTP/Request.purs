@@ -1,25 +1,18 @@
 module Bouzuya.HTTP.Request
   ( Request
-  , readBody
   ) where
 
-import Bouzuya.HTTP.Body (class Body)
-import Bouzuya.HTTP.Body as Body
+import Bouzuya.HTTP.Body (Body)
 import Bouzuya.HTTP.Headers (Headers)
 import Bouzuya.HTTP.Method (Method)
 import Bouzuya.HTTP.Server.Type (Address)
-import Data.ArrayBuffer.Types (Uint8Array)
 import Data.Tuple (Tuple)
-import Effect (Effect)
 
 type Request =
-  { body :: Uint8Array
+  { body :: Body
   , headers :: Headers
   , method :: Method
   , pathname :: String
   , remoteAddress :: Address
   , searchParams :: Array (Tuple String String)
   }
-
-readBody :: forall a. Body a => Request -> Effect a
-readBody { body } = Body.fromArray body

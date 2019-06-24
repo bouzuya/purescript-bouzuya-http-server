@@ -7,6 +7,7 @@ import Prelude
 import Bouzuya.HTTP.Response as Response
 import Bouzuya.HTTP.Server as Server
 import Bouzuya.HTTP.StatusCode as StatusCode
+import Data.Maybe as Maybe
 import Data.Tuple as Tuple
 import Effect.Class as Class
 import Effect.Class.Console as Console
@@ -31,7 +32,7 @@ tests = TestUnit.suite "Example" do
               StatusCode.status200
               [ Tuple.Tuple "Content-Type" "text/plain" ]
               -- e.g. GET /foo
-              ((show request.method) <> " " <> request.pathname))))
+              (Maybe.Just ((show request.method) <> " " <> request.pathname)))))
     --
     -- $ curl -D - http://localhost:3000/foo
     -- HTTP/1.1 200 OK
