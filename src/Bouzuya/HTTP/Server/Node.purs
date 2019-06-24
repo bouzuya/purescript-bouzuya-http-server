@@ -74,7 +74,7 @@ setStatusCode response (StatusCode code message) = do
   _ <- HTTP.setStatusCode response code
   HTTP.setStatusMessage response message
 
-readBody :: HTTP.Request -> Aff Body
+readBody :: HTTP.Request -> Aff (Maybe Body)
 readBody request = do
   let readable = HTTP.requestAsStream request
   bv <- AVar.empty
@@ -87,11 +87,14 @@ readBody request = do
     AVar.kill e bv
   _ <- liftEffect $ Stream.onEnd readable $ Aff.launchAff_ do
     bs <- AVar.take bsv
-    b <- liftEffect (Buffer.concat bs)
-    ab <- liftEffect (Buffer.toArrayBuffer b)
-    av <- (liftEffect (TypedArray.whole ab)) :: _ Uint8Array
-    body <- liftEffect (Body.toBody av)
-    AVar.put body bv
+    if Array.null bs
+      then AVar.put Maybe.Nothing bv
+      else do
+        b <- liftEffect (Buffer.concat bs)
+        ab <- liftEffect (Buffer.toArrayBuffer b)
+        av <- (liftEffect (TypedArray.whole ab)) :: _ Uint8Array
+        body <- liftEffect (Body.toBody av)
+        AVar.put (Maybe.Just body) bv
   AVar.take bv
 
 readRemoteAddress :: HTTP.Request -> Effect Address
